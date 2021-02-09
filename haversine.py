@@ -2,8 +2,8 @@ import math
 
 
 def distance(p1, p2):
-    lat1, lon1 = p1
-    lat2, lon2 = p2
+    lon1, lat1 = p1
+    lon2, lat2 = p2
     R = 6_371_000  # metres
     φ1 = lat1 * math.pi / 180  # φ, λ in radians
     φ2 = lat2 * math.pi / 180

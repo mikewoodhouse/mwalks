@@ -10,4 +10,4 @@ def test_dms_to_decimal():
 
 
 def test_haversine():
-    assert distance((51.415508, 0.113592), (51.415523, 0.113483)) == 7.741
+    assert distance((0.113592, 51.415508), (0.113483, 51.415523)) == 7.741
