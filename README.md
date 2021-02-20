@@ -26,6 +26,7 @@ pip install jupyter
 pip install matplotlib
 pip install scipy
 pip install pykdtree
+pip install seaborn
 
 pip install pytest
 pip install flake8
