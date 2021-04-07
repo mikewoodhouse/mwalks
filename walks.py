@@ -57,3 +57,14 @@ class Route:
     def avg_mph(self):
         hours = self.time() / 3600.0
         return self.miles() / hours
+
+    def point_at(self, target_elapsed):
+        start_time = self.points[0].secs
+        target_secs = start_time + target_elapsed
+        idx = 1
+        while self.points[idx].secs < target_secs and idx < len(self.points):
+            idx += 1
+        return self.points[idx]
+
+    def __repr__(self) -> str:
+        return f'{len(self.points)} points, {self.metres() / 1000:.3f}km = {self.miles():.2f}mi, {self.time():.2f} sec = {self.avg_mph():.2f} mph'
