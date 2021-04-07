@@ -13,7 +13,7 @@ class Point(NamedTuple):
     ele: float
 
     def __repr__(self) -> str:
-        return f'({self.lat},{self.lon})|{self.ele}@{self.secs:.2f}'
+        return f'({self.lon},{self.lat})|{self.ele}@{self.secs:.2f}'
 
     @property
     def loc(self):
@@ -62,8 +62,10 @@ class Route:
         start_time = self.points[0].secs
         target_secs = start_time + target_elapsed
         idx = 1
-        while self.points[idx].secs < target_secs and idx < len(self.points):
+        while self.points[idx].secs < target_secs:
             idx += 1
+            if idx >= len(self.points):
+                return None
         return self.points[idx]
 
     def __repr__(self) -> str:
