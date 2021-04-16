@@ -1,3 +1,5 @@
+from dateutil import parser
+from datetime import date, datetime
 from math import hypot
 from typing import NamedTuple
 
@@ -8,6 +10,7 @@ class Point(NamedTuple):
     point_id: int
     route_id: int
     secs: float
+    dtstr: str
     lat: float
     lon: float
     ele: float
@@ -19,6 +22,9 @@ class Point(NamedTuple):
     def loc(self):
         return (self.lon, self.lat)
 
+    @property
+    def dt(self):
+        return parser.parse(self.dtstr)
 
 class Segment:
     def __init__(self, from_pt, to_pt) -> None:
@@ -35,11 +41,14 @@ class Route:
         self.points = []
         self.segments = []
         self.prev_pt = None
+        self.walk_date = None
 
     def add_point(self, pt):
         self.points.append(pt)
         if self.prev_pt:
             self.segments.append(Segment(self.prev_pt, pt))
+        else:
+            self.walk_date = pt.dt.date()
         self.prev_pt = pt
 
     def level_distance(self):

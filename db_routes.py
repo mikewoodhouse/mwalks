@@ -14,15 +14,12 @@ def load_routes_from_db():
         ,   Cast(strftime('%H', dt) AS INTEGER) * 3600
         + Cast(strftime('%M', dt) AS INTEGER) * 60
         + Cast(strftime('%f', dt) AS REAL) AS secs
+        ,   datetime(dt) AS dt
         ,   lat
         ,   lon
         ,   ele
         FROM points ORDER BY route_id, point_id
     """).fetchall()
-    print(len(db_points))
-
-    route_bounds = conn.execute('SELECT Min(lon), Min(lat), Max(lon), Max(lat) FROM points').fetchone()
-    print(route_bounds)
 
     conn.close()
 
