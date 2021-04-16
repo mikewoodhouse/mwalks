@@ -23,7 +23,7 @@ class TrackPoint:
     @classmethod
     @property
     def sql_insert_fields(cls):
-        return [col[0] for col in cls.columns if not 'PRIMARY KEY' in col[1]]
+        return [col[0] for col in cls.columns if 'PRIMARY KEY' not in col[1]]
 
     @classmethod
     @property
@@ -45,7 +45,7 @@ class TrackPoint:
         return (route_id, self.dt, self.lat, self.lon, self.ele)
 
     def __repr__(self):
-            return f'{self.date_time}, ({self.lat}, {self.lon}), {self.ele}m'
+        return f'{self.date_time}, ({self.lat}, {self.lon}), {self.ele}m'
 
 
 class Route:
@@ -121,6 +121,7 @@ def build_db():
         rows = c.fetchone()[0]
         print(f'    {rows} {tname}')
     conn.close()
+
 
 if __name__ == "__main__":
     build_db()
