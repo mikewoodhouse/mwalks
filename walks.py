@@ -77,5 +77,14 @@ class Route:
                 return None
         return self.points[idx]
 
+    @property
+    def bounds(self):
+        return (
+            min(pt.lon for pt in self.points),
+            min(pt.lat for pt in self.points),
+            max(pt.lon for pt in self.points),
+            max(pt.lat for pt in self.points),
+        )
+
     def __repr__(self) -> str:
         return f'{len(self.points)} points, {self.metres() / 1000:.3f}km = {self.miles():.2f}mi, {self.time():.2f} sec = {self.avg_mph():.2f} mph'
