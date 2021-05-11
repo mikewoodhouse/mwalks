@@ -60,6 +60,9 @@ class Route:
     def miles(self):
         return self.metres() * 0.621371 / 1000.0
 
+    def filtered_time(self):
+        return sum(seg.secs for seg in self.segments if seg.distance / seg.secs > 0.5)
+
     def time(self):
         return sum(seg.secs for seg in self.segments)
 
