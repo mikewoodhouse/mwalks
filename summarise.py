@@ -27,18 +27,20 @@ class Count:
         self.walks = 0
         self.miles = 0.0
         self.hrs = 0.0
-        self.filtered_hrs= 0.0
+        self.filtered_hrs = 0.0
+        self.filtered_miles = 0.0
 
     def add(self, rt):
         self.walks += 1
         self.miles += rt.miles()
         self.hrs += rt.time() / 3600
         self.filtered_hrs += rt.filtered_time() / 3600
+        self.filtered_miles += rt.filtered_miles()
 
     def __repr__(self):
         avg_mph = self.miles / self.hrs
-        filtered_avg_mph = self.miles / self.filtered_hrs
-        return(f'{self.walks} walks, {self.miles:.2f} miles, {self.hrs:.2f} hrs, {avg_mph:.2f} mph, filtered: {filtered_avg_mph:.2f} mph')
+        filtered_avg_mph = self.filtered_miles / self.filtered_hrs
+        return(f'{self.walks} walks, {self.miles:.2f} miles ({self.filtered_miles:.2f}), {self.hrs:.2f} hrs ({self.filtered_hrs:.2f}), {avg_mph:.2f} mph ({filtered_avg_mph:.2f})')
 
 
 tots = defaultdict(Count)

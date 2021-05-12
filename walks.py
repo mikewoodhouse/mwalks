@@ -34,9 +34,14 @@ class Segment:
         self.delta_ele = self.to_point.ele - self.from_point.ele
         self.distance = hypot(self.level_distance, self.delta_ele)
         self.secs = self.to_point.secs - self.from_point.secs
+        self.mps = self.distance / self.secs
+
+
+FILTER_SPEED_LIMIT = 0.5
 
 
 class Route:
+
     def __init__(self):
         self.points = []
         self.segments = []
@@ -61,7 +66,10 @@ class Route:
         return self.metres() * 0.621371 / 1000.0
 
     def filtered_time(self):
-        return sum(seg.secs for seg in self.segments if seg.distance / seg.secs > 0.5)
+        return sum(seg.secs for seg in self.segments if seg.mps > FILTER_SPEED_LIMIT)
+
+    def filtered_miles(self):
+        return sum(seg.distance for seg in self.segments if seg.mps > FILTER_SPEED_LIMIT) * 0.621371 / 1000.0
 
     def time(self):
         return sum(seg.secs for seg in self.segments)
