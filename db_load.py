@@ -2,6 +2,7 @@ import xml.etree.ElementTree as ET
 import dateutil.parser
 import sqlite3
 
+from summarise import summarise
 
 class TrackPoint:
     table_name = 'points'
@@ -125,3 +126,4 @@ def build_db():
 
 if __name__ == "__main__":
     build_db()
+    summarise()

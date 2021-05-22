@@ -43,12 +43,18 @@ class Count:
         return(f'{self.walks} walks, {self.miles:.2f} miles ({self.filtered_miles:.2f}), {self.hrs:.2f} hrs ({self.filtered_hrs:.2f}), {avg_mph:.2f} mph ({filtered_avg_mph:.2f})')
 
 
-tots = defaultdict(Count)
+def summarise():
 
-for k, r in routes.items():
-    yy = r.walk_date.year
-    mm = r.walk_date.month
-    tots[(yy, mm)].add(r)
+    tots = defaultdict(Count)
 
-for k, t in tots.items():
-    print(k, t)
+    for k, r in routes.items():
+        yy = r.walk_date.year
+        mm = r.walk_date.month
+        tots[(yy, mm)].add(r)
+
+    for k, t in tots.items():
+        print(k, t)
+
+
+if __name__ == "__main__":
+    summarise()
