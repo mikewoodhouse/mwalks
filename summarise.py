@@ -1,27 +1,6 @@
 from collections import defaultdict
 from db_routes import load_routes_from_db
 
-routes = load_routes_from_db()
-
-rt = routes[80]
-
-segs = rt.segments
-
-print(len(segs))
-
-d_over_t = [round(seg.distance / seg.secs, 1) for seg in segs]
-
-from collections import Counter
-
-counter = Counter(d_over_t)
-
-# for k in sorted(counter.keys()):
-#     print(f'{k}: {counter[k]}')
-
-print(rt.time())
-print(rt.filtered_time())
-
-
 class Count:
     def __init__(self):
         self.walks = 0
@@ -46,6 +25,8 @@ class Count:
 def summarise():
 
     tots = defaultdict(Count)
+
+    routes = load_routes_from_db()
 
     for k, r in routes.items():
         yy = r.walk_date.year
