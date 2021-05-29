@@ -1,3 +1,4 @@
+from db_routes import load_routes_from_db
 import xml.etree.ElementTree as ET
 import dateutil.parser
 import sqlite3
@@ -126,4 +127,7 @@ def build_db():
 
 if __name__ == "__main__":
     build_db()
-    summarise()
+    routes = load_routes_from_db()
+    for route in routes.items():
+        print(route)
+    summarise(routes)

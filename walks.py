@@ -1,6 +1,7 @@
 from dateutil import parser
 from datetime import date, datetime
 from math import hypot
+from shapely.geometry import shape
 from typing import NamedTuple
 
 from haversine import distance
@@ -97,5 +98,11 @@ class Route:
             max(pt.lat for pt in self.points),
         )
 
+    @property
+    def shape(self):
+        coords = [[(pt.lon, pt.lat) for pt in self.points]]
+        return shape({'type': 'MultiLineString', 'coordinates': coords})
+
     def __repr__(self) -> str:
-        return f'{len(self.points)} points, {self.metres() / 1000:.3f}km = {self.miles():.2f}mi, {self.time():.2f} sec = {self.avg_mph():.2f} mph'
+        filtered_mph = self.filtered_miles() * 3600.0 / self.filtered_time()
+        return(f'{self.miles():.2f} miles ({self.filtered_miles():.2f}), {self.time() / 3600.0:.2f} hrs ({self.filtered_time() / 3600.0:.2f}), {self.avg_mph():.2f} mph ({filtered_mph:.2f})')
