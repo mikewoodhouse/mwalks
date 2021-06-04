@@ -67,10 +67,15 @@ class Route:
         return self.metres() * 0.621371 / 1000.0
 
     def filtered_time(self):
-        return sum(seg.secs for seg in self.segments if seg.mps > FILTER_SPEED_LIMIT)
+        return sum(seg.secs for seg in self.moving_segments())
 
     def filtered_miles(self):
-        return sum(seg.distance for seg in self.segments if seg.mps > FILTER_SPEED_LIMIT) * 0.621371 / 1000.0
+        return sum(seg.distance for seg in self.moving_segments()) * 0.621371 / 1000.0
+
+    def moving_segments(self):
+        def faster_than(seg):
+            return seg.mps > FILTER_SPEED_LIMIT
+        yield from filter(faster_than, self.segments)
 
     def time(self):
         return sum(seg.secs for seg in self.segments)
@@ -78,6 +83,15 @@ class Route:
     def avg_mph(self):
         hours = self.time() / 3600.0
         return self.miles() / hours
+
+    def filtered_mph(self):
+        return self.filtered_miles() * 3600.0 / self.filtered_time()
+
+    def rise(self):
+        return sum(seg.delta_ele for seg in self.segments if seg.delta_ele > 0.0)
+
+    def fall(self):
+        return sum(seg.delta_ele for seg in self.segments if seg.delta_ele < 0.0)
 
     def point_at(self, target_elapsed):
         start_time = self.points[0].secs
@@ -104,5 +118,4 @@ class Route:
         return shape({'type': 'MultiLineString', 'coordinates': coords})
 
     def __repr__(self) -> str:
-        filtered_mph = self.filtered_miles() * 3600.0 / self.filtered_time()
-        return(f'{self.miles():.2f} miles ({self.filtered_miles():.2f}), {self.time() / 3600.0:.2f} hrs ({self.filtered_time() / 3600.0:.2f}), {self.avg_mph():.2f} mph ({filtered_mph:.2f})')
+        return(f'{self.miles():.2f} miles ({self.filtered_miles():.2f}), {self.time() / 3600.0:.2f} hrs ({self.filtered_time() / 3600.0:.2f}), {self.avg_mph():.2f} mph ({self.filtered_mph():.2f})')
