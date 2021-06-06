@@ -7,6 +7,10 @@ from typing import NamedTuple
 from haversine import distance
 
 
+def to_miles(metres):
+    return metres * 0.621371 / 1000.0
+
+
 class Point(NamedTuple):
     point_id: int
     route_id: int
@@ -64,13 +68,13 @@ class Route:
         return sum(seg.distance for seg in self.segments)
 
     def miles(self):
-        return self.metres() * 0.621371 / 1000.0
+        return to_miles(self.metres())
 
     def filtered_time(self):
         return sum(seg.secs for seg in self.moving_segments())
 
     def filtered_miles(self):
-        return sum(seg.distance for seg in self.moving_segments()) * 0.621371 / 1000.0
+        return to_miles(sum(seg.distance for seg in self.moving_segments()))
 
     def moving_segments(self):
         def faster_than(seg):
