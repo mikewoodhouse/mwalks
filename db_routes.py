@@ -18,7 +18,8 @@ def load_routes_from_db():
         ,   lat
         ,   lon
         ,   ele
-        FROM points ORDER BY route_id, point_id
+        FROM points
+        ORDER BY route_id, point_id
     """).fetchall()
 
     conn.close()
