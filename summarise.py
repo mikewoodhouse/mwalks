@@ -11,10 +11,10 @@ class Count:
 
     def add(self, rt):
         self.walks += 1
-        self.miles += rt.miles()
-        self.hrs += rt.time() / 3600
-        self.filtered_hrs += rt.filtered_time() / 3600
-        self.filtered_miles += rt.filtered_miles()
+        self.miles += rt.miles
+        self.hrs += rt.time / 3600
+        self.filtered_hrs += rt.filtered.time / 3600
+        self.filtered_miles += rt.filtered.miles
 
     def __repr__(self):
         avg_mph = self.miles / self.hrs

@@ -1,5 +1,4 @@
 from dateutil import parser
-from datetime import date, datetime
 from math import hypot
 from shapely.geometry import shape
 from typing import NamedTuple
@@ -68,39 +67,32 @@ class Route:
             self.walk_date = pt.dt.date()
         self.prev_pt = pt
 
+    @property
     def level_distance(self):
         return sum(seg.level_distance for seg in self.segments)
 
+    @property
     def metres(self):
         return sum(seg.distance for seg in self.segments)
 
+    @property
     def miles(self):
-        return to_miles(self.metres())
+        return to_miles(self.metres)
 
-    def filtered_time(self):
-        return sum(seg.secs for seg in self.moving_segments())
-
-    def filtered_miles(self):
-        return to_miles(sum(seg.distance for seg in self.moving_segments()))
-
-    def moving_segments(self):
-        def faster_than(seg):
-            return seg.mps > FILTER_SPEED_LIMIT
-        yield from filter(faster_than, self.segments)
-
+    @property
     def time(self):
         return sum(seg.secs for seg in self.segments)
 
-    def avg_mph(self):
-        hours = self.time() / 3600.0
-        return self.miles() / hours
+    @property
+    def mph(self):
+        hours = self.time / 3600.0
+        return self.miles / hours
 
-    def filtered_mph(self):
-        return self.filtered_miles() * 3600.0 / self.filtered_time()
-
+    @property
     def rise(self):
         return sum(seg.delta_ele for seg in self.segments if seg.delta_ele > 0.0)
 
+    @property
     def fall(self):
         return sum(seg.delta_ele for seg in self.segments if seg.delta_ele < 0.0)
 
@@ -128,5 +120,18 @@ class Route:
         coords = [[(pt.lon, pt.lat) for pt in self.points]]
         return shape({'type': 'MultiLineString', 'coordinates': coords})
 
+    def moving_segments(self):
+        def faster_than(seg):
+            return seg.mps > FILTER_SPEED_LIMIT
+        yield from filter(faster_than, self.segments)
+
+    @property
+    def filtered(self):
+        rt = Route()
+        for s in self.moving_segments():
+            rt.segments.append(s)
+        return rt
+
+
     def __repr__(self) -> str:
-        return(f'{self.miles():.2f} miles ({self.filtered_miles():.2f}), {self.time() / 3600.0:.2f} hrs ({self.filtered_time() / 3600.0:.2f}), {self.avg_mph():.2f} mph ({self.filtered_mph():.2f}) rise/fall {self.rise():.1f}/{self.fall():.1f}m')
+        return(f'{self.miles:.2f} miles ({self.filtered.miles:.2f}), {self.time / 3600.0:.2f} hrs ({self.filtered.time / 3600.0:.2f}), {self.mph:.2f} mph ({self.filtered.mph:.2f}) rise/fall {self.rise:.1f}/{self.fall:.1f}m')
