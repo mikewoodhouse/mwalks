@@ -31,6 +31,10 @@ class Point(NamedTuple):
     def dt(self):
         return parser.parse(self.dtstr)
 
+    def __copy__(self):
+        return type(self)(self.point_id, self.route_id, self.secs, self.dtstr, self.lat, self.lon, self.ele)
+
+
 class Segment:
     def __init__(self, from_pt, to_pt) -> None:
         self.from_point = from_pt
@@ -39,7 +43,10 @@ class Segment:
         self.delta_ele = self.to_point.ele - self.from_point.ele
         self.distance = hypot(self.level_distance, self.delta_ele)
         self.secs = self.to_point.secs - self.from_point.secs
-        self.mps = self.distance / self.secs
+        self.mps = 0 if self.secs == 0 else self.distance / self.secs
+
+    def __repr__(self):
+        return f'{self.from_point}->{self.to_point}'
 
 
 FILTER_SPEED_LIMIT = 0.5
@@ -122,4 +129,4 @@ class Route:
         return shape({'type': 'MultiLineString', 'coordinates': coords})
 
     def __repr__(self) -> str:
-        return(f'{self.miles():.2f} miles ({self.filtered_miles():.2f}), {self.time() / 3600.0:.2f} hrs ({self.filtered_time() / 3600.0:.2f}), {self.avg_mph():.2f} mph ({self.filtered_mph():.2f})')
+        return(f'{self.miles():.2f} miles ({self.filtered_miles():.2f}), {self.time() / 3600.0:.2f} hrs ({self.filtered_time() / 3600.0:.2f}), {self.avg_mph():.2f} mph ({self.filtered_mph():.2f}) rise/fall {self.rise():.1f}/{self.fall():.1f}m')
