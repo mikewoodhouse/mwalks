@@ -25,14 +25,17 @@ class Count:
 def summarise(routes):
 
     tots = defaultdict(Count)
+    grand_tot = Count()
 
     for k, r in routes.items():
         yy = r.walk_date.year
         mm = r.walk_date.month
         tots[(yy, mm)].add(r)
+        grand_tot.add(r)
 
     for k, t in tots.items():
         print(k, t)
+    print("Total:", grand_tot)
 
 
 if __name__ == "__main__":
