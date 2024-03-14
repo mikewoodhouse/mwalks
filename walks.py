@@ -1,7 +1,8 @@
-from dateutil import parser
 from math import hypot
-from shapely.geometry import shape
 from typing import NamedTuple
+
+from dateutil import parser
+from shapely.geometry import MultiLineString, shape
 
 from haversine import distance
 
@@ -20,7 +21,7 @@ class Point(NamedTuple):
     ele: float
 
     def __repr__(self) -> str:
-        return f'({self.lon},{self.lat})|{self.ele}@{self.secs:.2f}'
+        return f"({self.lon},{self.lat})|{self.ele}@{self.secs:.2f}"
 
     @property
     def loc(self):
@@ -31,7 +32,15 @@ class Point(NamedTuple):
         return parser.parse(self.dtstr)
 
     def __copy__(self):
-        return type(self)(self.point_id, self.route_id, self.secs, self.dtstr, self.lat, self.lon, self.ele)
+        return type(self)(
+            self.point_id,
+            self.route_id,
+            self.secs,
+            self.dtstr,
+            self.lat,
+            self.lon,
+            self.ele,
+        )
 
 
 class Segment:
@@ -45,7 +54,7 @@ class Segment:
         self.mps = 0 if self.secs == 0 else self.distance / self.secs
 
     def __repr__(self):
-        return f'{self.from_point}->{self.to_point}'
+        return f"{self.from_point}->{self.to_point}"
 
 
 FILTER_SPEED_LIMIT = 0.5
@@ -116,13 +125,14 @@ class Route:
         )
 
     @property
-    def shape(self):
+    def shape(self) -> MultiLineString:
         coords = [[(pt.lon, pt.lat) for pt in self.points]]
-        return shape({'type': 'MultiLineString', 'coordinates': coords})
+        return shape({"type": "MultiLineString", "coordinates": coords})
 
     def moving_segments(self):
         def faster_than(seg):
             return seg.mps > FILTER_SPEED_LIMIT
+
         yield from filter(faster_than, self.segments)
 
     @property
@@ -132,6 +142,5 @@ class Route:
             rt.segments.append(s)
         return rt
 
-
     def __repr__(self) -> str:
-        return(f'{self.miles:.2f} miles ({self.filtered.miles:.2f}), {self.time / 3600.0:.2f} hrs ({self.filtered.time / 3600.0:.2f}), {self.mph:.2f} mph ({self.filtered.mph:.2f}) rise/fall {self.rise:.1f}/{self.fall:.1f}m')
+        return f"{self.miles:.2f} miles ({self.filtered.miles:.2f}), {self.time / 3600.0:.2f} hrs ({self.filtered.time / 3600.0:.2f}), {self.mph:.2f} mph ({self.filtered.mph:.2f}) rise/fall {self.rise:.1f}/{self.fall:.1f}m"
