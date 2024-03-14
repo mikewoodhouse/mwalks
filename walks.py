@@ -143,4 +143,10 @@ class Route:
         return rt
 
     def __repr__(self) -> str:
-        return f"{self.miles:.2f} miles ({self.filtered.miles:.2f}), {self.time / 3600.0:.2f} hrs ({self.filtered.time / 3600.0:.2f}), {self.mph:.2f} mph ({self.filtered.mph:.2f}) rise/fall {self.rise:.1f}/{self.fall:.1f}m"
+        return ", ".join(
+            [
+                f"{self.miles:.2f} miles ({self.filtered.miles:.2f})",
+                f"{self.time / 3600.0:.2f} hrs ({self.filtered.time / 3600.0:.2f})",
+                f"{self.mph:.2f} mph ({self.filtered.mph:.2f}) rise/fall {self.rise:.1f}/{self.fall:.1f}m",
+            ]
+        )

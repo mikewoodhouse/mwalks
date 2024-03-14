@@ -1,5 +1,7 @@
 from collections import defaultdict
+
 from db_routes import load_routes_from_db
+
 
 class Count:
     def __init__(self):
@@ -19,7 +21,12 @@ class Count:
     def __repr__(self):
         avg_mph = self.miles / self.hrs
         filtered_avg_mph = self.filtered_miles / self.filtered_hrs
-        return(f'{self.walks} walks, {self.miles:.2f} miles ({self.filtered_miles:.2f}), {self.hrs:.2f} hrs ({self.filtered_hrs:.2f}), {avg_mph:.2f} mph ({filtered_avg_mph:.2f})')
+        return (
+            f"{self.walks} walks, {self.miles:.2f} miles"
+            f" ({self.filtered_miles:.2f})"
+            f", {self.hrs:.2f} hrs ({self.filtered_hrs:.2f})"
+            f", {avg_mph:.2f} mph ({filtered_avg_mph:.2f})"
+        )
 
 
 def summarise(routes):
@@ -33,7 +40,7 @@ def summarise(routes):
         tots[(yy, mm)].add(r)
         grand_tot.add(r)
 
-    for k, t in tots.items():
+    for k, t in sorted(tots.items()):
         print(k, t)
     print("Total:", grand_tot)
 

@@ -31,7 +31,10 @@ class TrackPoint:
 
     @classmethod
     def insert_sql(cls) -> str:
-        return f'INSERT INTO points ({",".join(cls.sql_insert_fields())}) VALUES ({", ".join(list("?" * len(cls.sql_insert_fields())))})'
+        return f"""
+        INSERT INTO points ({",".join(cls.sql_insert_fields())})
+        VALUES ({", ".join(list("?" * len(cls.sql_insert_fields())))})
+        """
 
     def __init__(self, pt):
         self.lat = float(pt.attrib["lat"])
