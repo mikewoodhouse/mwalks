@@ -1,13 +1,14 @@
-from collections import defaultdict
 import sqlite3
+from collections import defaultdict
 
-from walks import Route, Point
+from lib.walks import Point, Route
 
 
 def load_routes_from_db():
-    conn = sqlite3.connect('mwalks.sqlite')
+    conn = sqlite3.connect("mwalks.sqlite")
 
-    db_points = conn.execute("""
+    db_points = conn.execute(
+        """
         SELECT
             point_id
         ,   route_id
@@ -20,7 +21,8 @@ def load_routes_from_db():
         ,   ele
         FROM points
         ORDER BY route_id, point_id
-    """).fetchall()
+    """
+    ).fetchall()
 
     conn.close()
 

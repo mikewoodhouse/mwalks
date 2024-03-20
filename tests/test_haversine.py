@@ -1,4 +1,4 @@
-from haversine import distance
+from lib.haversine import distance
 
 
 def dms_to_decimal(d, m, s):

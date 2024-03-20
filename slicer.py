@@ -1,6 +1,6 @@
 from copy import copy
 
-from walks import Point, Route
+from lib.walks import Point, Route
 
 
 def split_point(seg, split_secs):

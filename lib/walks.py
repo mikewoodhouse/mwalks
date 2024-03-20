@@ -4,7 +4,7 @@ from typing import NamedTuple
 from dateutil import parser
 from shapely.geometry import MultiLineString, shape
 
-from haversine import distance
+from lib.haversine import distance
 
 
 def to_miles(metres):
