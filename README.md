@@ -5,33 +5,6 @@ Don't know if this is the best way, but it gets Win-working versions of various 
 Found on [stackoverflow](https://stackoverflow.com/questions/54734667/error-installing-geopandas-a-gdal-api-version-must-be-specified-in-anaconda) and extended to include everything else needed.
 
 
-```
-pip install --upgrade pip
-
-pip install wheel
-pip install pipwin
-
-pipwin install numpy
-pipwin install pandas
-pipwin install shapely
-pipwin install gdal
-pipwin install fiona
-pipwin install pyproj
-pipwin install six
-pipwin install rtree
-pipwin install geopandas
-pipwin install cartopy
-
-pip install jupyter
-pip install matplotlib
-pip install scipy
-pip install pykdtree
-pip install seaborn
-
-pip install pytest
-pip install flake8
-```
-
 # References
 
 First effort stolen pretty much  verbatim from this one:
