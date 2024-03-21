@@ -2,12 +2,6 @@ from dataclasses import dataclass, field
 from datetime import datetime
 
 
-def decode_datetime_string(s: str) -> datetime:
-    dt = datetime.fromisoformat(s)
-    print(f"decoded {s} -> {dt}")
-    return dt
-
-
 @dataclass
 class Point:
     point_id: int = 0
@@ -16,14 +10,18 @@ class Point:
     lat: float = 0
     lon: float = 0
     ele: float = 0
+    secs: float = field(init=False)
 
     def __post_init__(self) -> None:
         if isinstance(self.dt, str):
             self.dt = datetime.fromisoformat(self.dt)
+        self.secs = (
+            self.dt.hour * 3600.0
+            + self.dt.minute * 60
+            + self.dt.second
+            + self.dt.microsecond / 1_000_000.0
+        )
 
-
-@dataclass
-class Route:
-    route_id: int = 0
-    path: str = ""
-    points: list[Point] = field(default_factory=list)
+    @property
+    def loc(self):
+        return (self.lon, self.lat)

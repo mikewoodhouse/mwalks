@@ -1,4 +1,4 @@
-from lib.haversine import distance
+from lib.calcs import haversine_distance
 
 
 def dms_to_decimal(d, m, s):
@@ -10,4 +10,4 @@ def test_dms_to_decimal():
 
 
 def test_haversine():
-    assert distance((0.113592, 51.415508), (0.113483, 51.415523)) == 7.741
+    assert haversine_distance((0.113592, 51.415508), (0.113483, 51.415523)) == 7.741

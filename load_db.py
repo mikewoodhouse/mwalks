@@ -54,7 +54,7 @@ class TrackPoint:
         return f"{self.dt}, ({self.lat}, {self.lon}), {self.ele}m"
 
 
-class Route:
+class RouteLoader:
     create_sql = """
         DROP TABLE IF EXISTS routes;
         CREATE TABLE routes (
@@ -71,7 +71,6 @@ class Route:
         csr = conn.cursor()
         csr.execute(sql, (self.path,))
         self.route_id = csr.lastrowid
-        print(f"inserted route for {self.path} as {self.route_id}")
         csr.close()
         conn.commit()
 
@@ -87,6 +86,7 @@ class Route:
         csr.executemany(sql, insert_values)
         csr.close()
         conn.commit()
+        print(f"added route for {self.path} as {self.route_id}")
 
 
 class TrackPointDbBuilder:
@@ -95,11 +95,11 @@ class TrackPointDbBuilder:
         self.conn = sqlite3.connect(self.db_path)
 
     def create_db(self):
-        self.conn.executescript(Route.create_sql)
+        self.conn.executescript(RouteLoader.create_sql)
         self.conn.executescript(TrackPoint.create_sql())
 
     def add_route_file(self, path):
-        route = Route(path)
+        route = RouteLoader(path)
         route.add_to_db(self.conn)
 
 

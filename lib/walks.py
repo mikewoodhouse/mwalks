@@ -4,7 +4,7 @@ from typing import NamedTuple
 from dateutil import parser
 from shapely.geometry import MultiLineString, shape
 
-from lib.haversine import distance
+from lib.calcs import haversine_distance
 
 
 def to_miles(metres):
@@ -47,7 +47,7 @@ class Segment:
     def __init__(self, from_pt, to_pt) -> None:
         self.from_point = from_pt
         self.to_point = to_pt
-        self.level_distance = distance(self.from_point.loc, self.to_point.loc)
+        self.level_distance = haversine_distance(self.from_point.loc, self.to_point.loc)
         self.delta_ele = self.to_point.ele - self.from_point.ele
         self.distance = hypot(self.level_distance, self.delta_ele)
         self.secs = self.to_point.secs - self.from_point.secs

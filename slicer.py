@@ -1,5 +1,3 @@
-from copy import copy
-
 from lib.walks import Point, Route
 
 
