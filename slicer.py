@@ -6,17 +6,15 @@ def split_point(seg, split_secs):
     lat = seg.from_point.lat + (seg.to_point.lat - seg.from_point.lat) * split_pct
     lon = seg.from_point.lon + (seg.to_point.lon - seg.from_point.lon) * split_pct
     ele = seg.from_point.ele + (seg.to_point.ele - seg.from_point.ele) * split_pct
-    p2 = Point(
-        None,
-        None,
+    return Point(
+        -1,
+        -1,
         seg.from_point.secs + split_secs,
         seg.from_point.dtstr,
         lat,
         lon,
         ele,
     )
-
-    return p2
 
 
 class Slicer:
@@ -27,7 +25,7 @@ class Slicer:
         self.slices = self.slice()
 
     def slice(self):
-        secs = self.route.filtered_time()
+        secs = self.route.filtered.time
         split_secs = secs / self.num_slices
         s = 0
         splits = []

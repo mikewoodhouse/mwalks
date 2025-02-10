@@ -145,6 +145,7 @@ class Route:
     def __repr__(self) -> str:
         return ", ".join(
             [
+                f"{self.walk_date:%Y-%m-%d}",
                 f"{self.miles:.2f} miles ({self.filtered.miles:.2f})",
                 f"{self.time / 3600.0:.2f} hrs ({self.filtered.time / 3600.0:.2f})",
                 f"{self.mph:.2f} mph ({self.filtered.mph:.2f}) rise/fall {self.rise:.1f}/{self.fall:.1f}m",
