@@ -1,10 +1,11 @@
 import sqlite3
 import xml.etree.ElementTree as ET
-
+import re
 import dateutil.parser
-
+from pathlib import Path
 from db_routes import load_routes_from_db
 from summarise import summarise
+from lib.route_collections import collection_for
 
 
 class TrackPoint:
@@ -54,25 +55,50 @@ class TrackPoint:
         return f"{self.dt}, ({self.lat}, {self.lon}), {self.ele}m"
 
 
+class RouteFile:
+    def __init__(self, path: Path) -> None:
+        self.path = path
+        self.date_time_str = self.to_date_time_str(
+            re.search(r"\d{14}", self.path.name)[0]
+        )
+
+    @staticmethod
+    def to_date_time_str(s: str) -> str:
+        return f"{s[:4]}-{s[4:6]}-{s[6:8]} {s[8:10]}:{s[10:12]}:{s[13:]}"
+
+
 class RouteLoader:
     create_sql = """
         DROP TABLE IF EXISTS routes;
         CREATE TABLE routes (
             route_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            path TEXT
+            path TEXT,
+            date_time TEXT,
+            collection TEXT
         );"""
 
-    def __init__(self, path):
-        self.path = path
+    def __init__(self, route_file: RouteFile):
+        self.route_file = route_file
+        self.path = route_file.path
         self.route_id = None
 
-    def add_to_db(self, conn: sqlite3.Connection) -> None:
-        sql = "INSERT INTO routes (path) VALUES (?)"
+    @staticmethod
+    def set_collection(conn: sqlite3.Connection, route_id: int) -> None:
+        sql = "UPDATE routes SET collection = :collection WHERE route_id = :route_id"
         csr = conn.cursor()
-        csr.execute(sql, (self.path,))
+        csr.execute(sql, {"route_id": route_id, "collection": collection_for(route_id)})
+        csr.close()
+        conn.commit()
+
+    def add_to_db(self, conn: sqlite3.Connection) -> None:
+        sql = "INSERT INTO routes (path, date_time) VALUES (?, ?)"
+        csr = conn.cursor()
+        csr.execute(sql, (self.path.name, self.route_file.date_time_str))
         self.route_id = csr.lastrowid
         csr.close()
         conn.commit()
+
+        self.set_collection(conn, self.route_id)
 
         root = ET.parse(self.path).getroot()
         pts = [
@@ -98,20 +124,19 @@ class TrackPointDbBuilder:
         self.conn.executescript(RouteLoader.create_sql)
         self.conn.executescript(TrackPoint.create_sql())
 
-    def add_route_file(self, path):
-        route = RouteLoader(path)
+    def add_route_file(self, file: RouteFile):
+        route = RouteLoader(file)
         route.add_to_db(self.conn)
 
 
 def build_db():
-
     builder = TrackPointDbBuilder()
     builder.create_db()
 
-    from glob import glob
-
-    for path in glob("routes/*.gpx"):
-        builder.add_route_file(path)
+    files = [RouteFile(path) for path in Path("routes").glob("*.gpx")]
+    files.sort(key=lambda f: f.date_time_str)
+    for file in files:
+        builder.add_route_file(file)
 
     conn = sqlite3.connect(builder.db_path)
     print("database now contains:")
@@ -125,6 +150,4 @@ def build_db():
 if __name__ == "__main__":
     build_db()
     routes = load_routes_from_db()
-    for route in routes.items():
-        print(route)
     summarise(routes)
